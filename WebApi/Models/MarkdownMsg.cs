@@ -35,12 +35,4 @@ namespace WebApi.Models
         [JsonProperty("text")]
         public string Text { get; set; }
     }
-
-    public partial class DingMsgMd
-    {
-        public static DingMsgMd FromJson(string json)
-        {
-            return JsonConvert.DeserializeObject<DingMsgMd>(json, Converter.Settings);
-        }
-    }
 }

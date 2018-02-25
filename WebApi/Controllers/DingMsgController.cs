@@ -1,10 +1,11 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using WebApi.Models;
+using WebApi.Models.Build;
+using WebApi.Models.Code;
+using WebApi.Models.WorkCreated;
+using WebApi.Models.WorkUpdated;
 using WebApi.Services;
 
 namespace WebApi.Controllers
@@ -12,7 +13,7 @@ namespace WebApi.Controllers
     /// <summary>
     /// 接收TFS webhook 后向钉钉发送消息通知
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [Produces("application/json")]
     public class DingMsgController : Controller
     {
@@ -26,6 +27,7 @@ namespace WebApi.Controllers
             workNoticeUrl = _configuration.GetSection("Services")["DingDing:WorkNoticeUrl"];
             buildNoticeUrl = _configuration.GetSection("Services")["DingDing:BuildNoticeUrl"];
         }
+
         /// <summary>
         /// 代码提交
         /// </summary>
@@ -37,14 +39,13 @@ namespace WebApi.Controllers
             var commit = data.Resource.Commits.First();
             //var repository = data.Resource.Repository;
             if (commit == null) return BadRequest();
-            var text = $@"**作者:** {commit.Author.Name}\n
-提交：[{commit.Comment}]({commit.Url})\n";
+            var text = $"### 代码提交{commit.Author.Name}\n\n" + data.DetailedMessage.Markdown;
 
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
                 {
-                    Title = data.DetailedMessage.Markdown,
+                    Title = "代码提交",
                     Text = text
                 },
                 At = new At
@@ -65,13 +66,14 @@ namespace WebApi.Controllers
         {
             var resource = data.Resource;
             if (resource == null) return BadRequest();
-            var text = $@"{resource.LastChangedBy.DisplayName} {resource.Reason} 创建,结果:**{resource.Status}**\n
-[日志]({resource.Log.Url})\n";
+            var text = $"### 构建{resource.Status}\n" +
+                $"> {data.DetailedMessage.Markdown}\n\n" +
+                $"> {resource.LastChangedBy.DisplayName}\n\n";
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
                 {
-                    Title = data.DetailedMessage.Markdown,
+                    Title = $"构建{resource.Status}",
                     Text = text
                 },
                 At = new At
@@ -79,6 +81,7 @@ namespace WebApi.Controllers
                     IsAtAll = false
                 }
             };
+            //return Json(sendMsg);
             return Json(DingServices.SendMsgAsync(buildNoticeUrl, sendMsg).Result);
         }
         /// <summary>
@@ -87,16 +90,16 @@ namespace WebApi.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult WorkCreated([FromBody]WorkItemCreated data)
+        public IActionResult WorkCreated([FromBody]WorkCreated data)
         {
             var work = data.Resource.Fields;
             if (work == null) return BadRequest();
-            var text = $@"{work.SystemCreatedBy} 创建了 {work.SystemWorkItemType}：{work.SystemTitle}";
+            var text = $"### 新任务 \n\n >{data.DetailedMessage.Markdown}";
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
                 {
-                    Title = data.Message.Markdown,
+                    Title = "新任务",
                     Text = text
                 },
                 At = new At
@@ -112,17 +115,16 @@ namespace WebApi.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult WorkUpdated([FromBody]WorkItemUpdated data)
+        public IActionResult WorkUpdated([FromBody]WorkUpdated data)
         {
-            var work = data.Resource.UpdateFields;
+            var work = data.Resource.Fields;
             if (work == null) return BadRequest();
-            var text = $@"状态:{work.SystemState.OldValue}=>{work.SystemState.NewValue}\n
-指派给：{work.SystemAssignedTo}";
+            var text = $"### 任务更新\n\n > {data.DetailedMessage.Markdown}";
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
                 {
-                    Title = data.DetailedMessage.Markdown,
+                    Title = "任务更新",
                     Text = text
                 },
                 At = new At
