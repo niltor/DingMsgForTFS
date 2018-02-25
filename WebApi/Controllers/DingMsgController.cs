@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -45,13 +46,13 @@ namespace WebApi.Controllers
             var commit = data.Resource.Commits.First();
             //var repository = data.Resource.Repository;
             if (commit == null) return BadRequest();
-            var text = $"### 代码提交{commit.Author.Name}\n\n" + data.DetailedMessage.Markdown;
+            var text = $"### 代码推送\n\n" + $"#####{data.DetailedMessage.Markdown}";
 
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
                 {
-                    Title = "代码提交",
+                    Title = "代码推送",
                     Text = text
                 },
                 At = new At
@@ -71,15 +72,18 @@ namespace WebApi.Controllers
         public IActionResult BuildCompleted([FromBody]BuildCompleted data)
         {
             var resource = data.Resource;
+            TimeSpan timeSpends = resource.FinishTime - resource.StartTime;
+
             if (resource == null) return BadRequest();
-            var text = $"### 构建{resource.Status}\n" +
-                $"> {data.DetailedMessage.Markdown}\n\n" +
-                $"> {resource.LastChangedBy.DisplayName}\n\n";
+            var text = $"### {resource.Definition.Name} 第{resource.Definition.Revision} 构建 {resource.Result}\n" +
+                $"#### {data.DetailedMessage.Markdown}\n\n" +
+                $"用时：{timeSpends.Seconds}\n\n" +
+                $"发起人:{resource.RequestedBy.DisplayName}\n\n";
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
                 {
-                    Title = $"构建{resource.Status}",
+                    Title = $"构建{resource.Result}",
                     Text = text
                 },
                 At = new At
@@ -99,8 +103,14 @@ namespace WebApi.Controllers
         public IActionResult WorkCreated([FromBody]WorkCreated data)
         {
             var work = data.Resource.Fields;
+            var workContent = data.Resource.Fields?.SystemDescription;
+            if (workContent.Length > 100)
+            {
+                workContent = workContent.Substring(0, 100);
+            }
             if (work == null) return BadRequest();
             var text = $"### 新任务 \n\n >{data.DetailedMessage.Markdown}";
+            text += $"任务内容：{workContent}";
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
@@ -124,8 +134,14 @@ namespace WebApi.Controllers
         public IActionResult WorkUpdated([FromBody]WorkUpdated data)
         {
             var work = data.Resource.Fields;
+            var workContent = data.Resource.Revision?.Fields.SystemDescription;
+            if (workContent.Length > 100)
+            {
+                workContent = workContent.Substring(0, 100);
+            }
             if (work == null) return BadRequest();
-            var text = $"### 任务更新\n\n > {data.DetailedMessage.Markdown}";
+            var text = $"### 任务更新\n\n {data.DetailedMessage.Markdown}";
+            text += $"任务内容：{workContent}";
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
