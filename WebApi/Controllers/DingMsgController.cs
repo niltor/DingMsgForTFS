@@ -28,6 +28,12 @@ namespace WebApi.Controllers
             buildNoticeUrl = _configuration.GetSection("Services")["DingDing:BuildNoticeUrl"];
         }
 
+
+        [HttpGet]
+        public IActionResult Test()
+        {
+            return Json("ok");
+        }
         /// <summary>
         /// 代码提交
         /// </summary>
