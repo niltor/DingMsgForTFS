@@ -76,13 +76,13 @@ namespace WebApi.Controllers
             TimeSpan timeSpends = resource.FinishTime - resource.StartTime;
             // 发起人
             var requestMan = resource.RequestedBy.DisplayName;
-            if (requestMan.Equals("Microsoft.TeamFoundation.System")) requestMan = "系统";
+            if (requestMan.Equals("Microsoft.TeamFoundation.System")) requestMan = "自动构建";
 
             if (resource == null) return BadRequest();
             var text = $"### {resource.Definition.Name} 构建 {resource.Result}\n" +
                 $"#### {data.DetailedMessage.Markdown}\n\n" +
                 $"用时：{timeSpends.Seconds}秒\n\n" +
-                $"请求方:{resource.RequestedBy.DisplayName}\n\n";
+                $"请求方:{requestMan}\n\n";
             var sendMsg = new MarkdownMsg
             {
                 Markdown = new Markdown
