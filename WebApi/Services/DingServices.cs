@@ -11,10 +11,8 @@ namespace WebApi.Services
 {
     public class DingServices
     {
-
         public static async Task<string> SendMsgAsync(string url, MarkdownMsg msg)
         {
-
             using (var hc = new HttpClient())
             {
                 var data = new StringContent(JsonConvert.SerializeObject(msg), Encoding.UTF8, "application/json");

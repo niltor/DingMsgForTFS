@@ -81,7 +81,7 @@ namespace WebApi.Controllers
             if (resource == null) return BadRequest();
             var text = $"### {resource.Definition.Name} 构建 {resource.Result}\n" +
                 $"#### {data.DetailedMessage.Markdown}\n\n" +
-                $"用时：{timeSpends.Seconds}秒\n\n" +
+                $"用时：{timeSpends.TotalSeconds}秒\n\n" +
                 $"请求方:{requestMan}\n\n";
             var sendMsg = new MarkdownMsg
             {
