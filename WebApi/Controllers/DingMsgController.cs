@@ -46,7 +46,7 @@ namespace WebApi.Controllers
             var commit = data.Resource.Commits.First();
             //var repository = data.Resource.Repository;
             if (commit == null) return BadRequest();
-            var text = $"### 代码推送\n\n" + $"#####{data.DetailedMessage.Markdown}";
+            var text = $"### 代码推送\n\n" + $"##### {data.DetailedMessage.Markdown}";
 
             var sendMsg = new MarkdownMsg
             {
