@@ -108,7 +108,11 @@ namespace WebApi.Controllers
         {
             var work = data.Resource.Fields;
             var workContent = data.Resource.Fields?.SystemDescription;
-            if (workContent.Length > 100)
+            if (workContent == null)
+            {
+                workContent = "无";
+            }
+            else if (workContent.Length > 100)
             {
                 workContent = workContent.Substring(0, 100);
             }
@@ -139,7 +143,11 @@ namespace WebApi.Controllers
         {
             var work = data.Resource.Fields;
             var workContent = data.Resource.Revision?.Fields.SystemDescription;
-            if (workContent.Length > 100)
+            if (workContent == null)
+            {
+                workContent = "无";
+            }
+            else if (workContent.Length > 100)
             {
                 workContent = workContent.Substring(0, 100);
             }
