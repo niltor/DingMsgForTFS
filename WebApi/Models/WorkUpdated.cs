@@ -204,7 +204,10 @@ namespace WebApi.Models.WorkUpdated
 
         [JsonProperty("WEF_EB329F44FE5F4A94ACB1DA153FDF38BA_Kanban.Column")]
         public string WefEb329F44Fe5F4A94Acb1Da153Fdf38BaKanbanColumn { get; set; }
+        [JsonProperty("System.Description")]
         public string SystemDescription { get; internal set; }
+        [JsonProperty("System.AssignedTo")]
+        public string SystemAssignedTo { get; set; }
     }
 
     public partial class ResourceContainers

@@ -117,7 +117,7 @@ namespace WebApi.Controllers
                 workContent = workContent.Substring(0, 100);
             }
             if (work == null) return BadRequest();
-            var text = $"### 新任务 \n\n >{data.DetailedMessage.Markdown}";
+            var text = $"### 新任务 @**{work.SystemAssignedTo ?? ""}**\n\n >{data.DetailedMessage.Markdown}";
             text += $"任务内容：{workContent}";
             var sendMsg = new MarkdownMsg
             {
@@ -152,7 +152,7 @@ namespace WebApi.Controllers
                 workContent = workContent.Substring(0, 100);
             }
             if (work == null) return BadRequest();
-            var text = $"### 任务更新\n\n {data.DetailedMessage.Markdown}";
+            var text = $"### 任务更新 @**{data.Resource.Revision?.Fields.SystemAssignedTo ?? ""}**\n\n{data.DetailedMessage.Markdown}\n\n";
             text += $"任务内容：{workContent}";
             var sendMsg = new MarkdownMsg
             {

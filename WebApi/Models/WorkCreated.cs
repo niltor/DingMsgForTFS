@@ -40,25 +40,61 @@ namespace WebApi.Models.WorkCreated
         public string Url { get; set; }
     }
 
+
     public class ResourceFields
     {
+        [JsonProperty("System.AreaPath")]
         public string SystemAreaPath { get; set; }
+
+        [JsonProperty("System.TeamProject")]
         public string SystemTeamProject { get; set; }
+
+        [JsonProperty("System.IterationPath")]
         public string SystemIterationPath { get; set; }
+
+        [JsonProperty("System.WorkItemType")]
         public string SystemWorkItemType { get; set; }
+
+        [JsonProperty("System.State")]
         public string SystemState { get; set; }
+
+        [JsonProperty("System.Reason")]
         public string SystemReason { get; set; }
+
+        [JsonProperty("System.AssignedTo")]
         public string SystemAssignedTo { get; set; }
-        public System.DateTime SystemCreatedDate { get; set; }
+
+        [JsonProperty("System.CreatedDate")]
+        public System.DateTimeOffset SystemCreatedDate { get; set; }
+
+        [JsonProperty("System.CreatedBy")]
         public string SystemCreatedBy { get; set; }
-        public System.DateTime SystemChangedDate { get; set; }
+
+        [JsonProperty("System.ChangedDate")]
+        public System.DateTimeOffset SystemChangedDate { get; set; }
+
+        [JsonProperty("System.ChangedBy")]
         public string SystemChangedBy { get; set; }
+
+        [JsonProperty("System.Title")]
         public string SystemTitle { get; set; }
+
+        [JsonProperty("Microsoft.VSTS.Scheduling.OriginalEstimate")]
         public double MicrosoftVstsSchedulingOriginalEstimate { get; set; }
+
+        [JsonProperty("Microsoft.VSTS.Common.Activity")]
         public string MicrosoftVstsCommonActivity { get; set; }
-        public System.DateTime MicrosoftVstsCommonStateChangeDate { get; set; }
+
+        [JsonProperty("Microsoft.VSTS.Common.StateChangeDate")]
+        public System.DateTimeOffset MicrosoftVstsCommonStateChangeDate { get; set; }
+
+        [JsonProperty("Microsoft.VSTS.Common.Priority")]
         public long MicrosoftVstsCommonPriority { get; set; }
+
+        [JsonProperty("System.Description")]
         public string SystemDescription { get; set; }
+
+        [JsonProperty("System.History")]
         public string SystemHistory { get; set; }
     }
 
